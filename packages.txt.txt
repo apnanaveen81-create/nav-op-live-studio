@@ -1,0 +1,4 @@
+ffmpeg
+imagemagick
+fonts-dejavu-core
+fonts-noto
