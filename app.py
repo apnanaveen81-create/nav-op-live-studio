@@ -143,6 +143,16 @@ with st.sidebar:
         '<a href="https://aistudio.google.com/apikey" target="_blank" class="api-link-box">🔗 Free Gemini API Key Yahan Se Lein ↗</a>',
         unsafe_allow_html=True
     )
+
+    st.divider()
+    st.subheader("🍪 YouTube Cookies (Direct Link Fix)")
+    cookies_file = st.file_uploader("cookies.txt Upload Karein (Optional)", type=["txt"], help="YouTube link block hatane ke liye browser se export ki gayi cookies.txt upload karein")
+    if cookies_file:
+        with open("yt_cookies.txt", "wb") as cf:
+            cf.write(cookies_file.read())
+        st.success("✅ YouTube Cookies Active!")
+    elif os.path.exists("yt_cookies.txt"):
+        st.success("✅ Saved YouTube Cookies Active!")
     
     st.divider()
     st.subheader("📐 Video Layout (Clarity Mode)")
@@ -172,7 +182,7 @@ with st.sidebar:
     st.divider()
     if st.button("🗑️ Clear Purani Files"):
         for f in os.listdir("."):
-            if f.startswith(("clip_", "voice_reel_", "source_", "temp_bg_", "tts_")) or f == "temp_logo.png":
+            if f.startswith(("clip_", "voice_reel_", "source_", "temp_bg_", "tts_")) or f in ("temp_logo.png", "yt_cookies.txt"):
                 try:
                     os.remove(f)
                 except:
@@ -285,12 +295,13 @@ tab1, tab2, tab3 = st.tabs([
 
 with tab1:
     st.subheader("📥 Video Source Chunein:")
-    source_type = st.radio("Source Type", ["Upload Video File (MP4/MOV) ⭐", "YouTube Video Link"], horizontal=True, label_visibility="collapsed")
+    source_type = st.radio("Source Type", ["YouTube Video Link", "Upload Video File (MP4/MOV)"], horizontal=True, label_visibility="collapsed")
     
     yt_url, uploaded_video = "", None
     if "YouTube" in source_type:
         yt_url = st.text_input("YouTube Video URL paste karein", placeholder="https://www.youtube.com/watch?v=...")
-        st.caption("ℹ️ Note: Kabhi-kabhi YouTube cloud server se direct download block kar deta hai—agar block aaye toh 'Upload Video File' use karein.")
+        if not os.path.exists("yt_cookies.txt"):
+            st.caption("💡 Tip: Agar YouTube cloud IP block kare toh left sidebar (`>>`) mein apni `cookies.txt` upload kar dein.")
     else:
         uploaded_video = st.file_uploader("Apni Video Upload Karein (Gallery / Files)", type=["mp4", "mov", "mkv"])
     
@@ -329,6 +340,9 @@ with tab1:
                         'quiet': True,
                         'extractor_args': {'youtube': {'player_client': ['android', 'ios', 'web']}}
                     }
+                    if os.path.exists("yt_cookies.txt"):
+                        ydl_opts['cookiefile'] = "yt_cookies.txt"
+
                     try:
                         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                             info = ydl.extract_info(yt_url, download=True)
@@ -336,8 +350,8 @@ with tab1:
                                 channel_name = info.get('uploader', 'NAV OP LIVE').upper()
                             total_dur = info.get('duration', 300)
                             video_title = info.get('title', 'Gaming Gameplay')
-                    except Exception:
-                        st.error("⚠️ YouTube ne cloud server se is video ka direct download block kar diya hai. Kripya video ko phone mein save karke upar 'Upload Video File (MP4/MOV)' se upload karein!")
+                    except Exception as e:
+                        st.error(f"⚠️ YouTube block: Left sidebar (`>>`) mein apni `cookies.txt` upload karein ya 'Upload Video File' use karein. ({str(e)[:120]})")
                         st.stop()
                 else:
                     if not uploaded_video:
