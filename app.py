@@ -11,42 +11,21 @@ import imageio_ffmpeg
 from mutagen.mp3 import MP3
 from google import genai
 
-# Get built-in FFmpeg executable path automatically
 FFMPEG_EXE = imageio_ffmpeg.get_ffmpeg_exe()
 
-# --- PAGE CONFIG ---
 st.set_page_config(page_title="NAV OP LIVE - AI Clipper & Growth Studio", page_icon="⚡", layout="wide")
 
-# --- CUSTOM NEON FLASHLIGHT GLOW HEADER & UI BOXES CSS ---
 st.markdown("""
 <style>
     @keyframes neonPulse {
-        0% {
-            box-shadow: 0 0 12px #FFD700, 0 0 25px #00FF88, inset 0 0 12px rgba(255, 215, 0, 0.22);
-            border-color: #FFD700;
-        }
-        50% {
-            box-shadow: 0 0 22px #00FF88, 0 0 38px #FFD700, inset 0 0 18px rgba(0, 255, 136, 0.28);
-            border-color: #00FF88;
-        }
-        100% {
-            box-shadow: 0 0 12px #FFD700, 0 0 25px #00FF88, inset 0 0 12px rgba(255, 215, 0, 0.22);
-            border-color: #FFD700;
-        }
+        0% { box-shadow: 0 0 12px #FFD700, 0 0 25px #00FF88, inset 0 0 12px rgba(255, 215, 0, 0.22); border-color: #FFD700; }
+        50% { box-shadow: 0 0 22px #00FF88, 0 0 38px #FFD700, inset 0 0 18px rgba(0, 255, 136, 0.28); border-color: #00FF88; }
+        100% { box-shadow: 0 0 12px #FFD700, 0 0 25px #00FF88, inset 0 0 12px rgba(255, 215, 0, 0.22); border-color: #FFD700; }
     }
     @keyframes softBoxGlow {
-        0% {
-            border-color: rgba(255, 215, 0, 0.65);
-            box-shadow: 0 0 8px rgba(255, 215, 0, 0.28);
-        }
-        50% {
-            border-color: rgba(0, 255, 136, 0.75);
-            box-shadow: 0 0 14px rgba(0, 255, 136, 0.38);
-        }
-        100% {
-            border-color: rgba(255, 215, 0, 0.65);
-            box-shadow: 0 0 8px rgba(255, 215, 0, 0.28);
-        }
+        0% { border-color: rgba(255, 215, 0, 0.65); box-shadow: 0 0 8px rgba(255, 215, 0, 0.28); }
+        50% { border-color: rgba(0, 255, 136, 0.75); box-shadow: 0 0 14px rgba(0, 255, 136, 0.38); }
+        100% { border-color: rgba(255, 215, 0, 0.65); box-shadow: 0 0 8px rgba(255, 215, 0, 0.28); }
     }
     .neon-banner {
         background: linear-gradient(135deg, #0b192c 0%, #102a43 50%, #0b192c 100%);
@@ -79,29 +58,19 @@ st.markdown("""
         margin: 0;
         text-transform: uppercase;
     }
-    .neon-sub {
-        color: #cbd5e1;
-        font-size: 13px;
-        margin-top: 6px;
-        letter-spacing: 0.5px;
-    }
-    /* Glowing Input Boxes, Textareas & Dropdowns */
-    div[data-baseweb="input"] > div,
-    div[data-baseweb="textarea"] > div,
-    div[data-baseweb="select"] > div {
+    .neon-sub { color: #cbd5e1; font-size: 13px; margin-top: 6px; letter-spacing: 0.5px; }
+    div[data-baseweb="input"] > div, div[data-baseweb="textarea"] > div, div[data-baseweb="select"] > div {
         border: 1.8px solid #FFD700 !important;
         border-radius: 10px !important;
         background-color: rgba(15, 23, 42, 0.85) !important;
         animation: softBoxGlow 3s infinite alternate;
     }
-    /* Glowing File Uploader Box */
     section[data-testid="stFileUploaderDropzone"] {
         border: 2px dashed #00FF88 !important;
         border-radius: 12px !important;
         background-color: rgba(15, 23, 42, 0.75) !important;
         animation: softBoxGlow 3s infinite alternate;
     }
-    /* Glowing Tabs */
     button[data-baseweb="tab"] {
         border: 1.5px solid rgba(255, 215, 0, 0.45) !important;
         border-radius: 10px !important;
@@ -123,9 +92,6 @@ st.markdown("""
         margin-bottom: 10px;
         box-shadow: 0 3px 10px rgba(0, 114, 255, 0.35);
     }
-    .api-link-box:hover {
-        opacity: 0.92;
-    }
     .stButton>button, .stDownloadButton>button {
         width: 100%;
         border-radius: 8px;
@@ -143,7 +109,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# --- PASSWORD LOCK GATE ---
 APP_PASSWORD = os.environ.get("STUDIO_PASSWORD", "NavOP123")
 if "studio_unlocked" not in st.session_state:
     st.session_state["studio_unlocked"] = False
@@ -162,7 +127,6 @@ if not st.session_state["studio_unlocked"]:
                 st.error("❌ Galat Password! Dobara check karein.")
     st.stop()
 
-# --- INITIALIZE PERSISTENT SESSION STATE ---
 if "saved_clips" not in st.session_state:
     st.session_state["saved_clips"] = []
 if "saved_clips_meta" not in st.session_state:
@@ -172,7 +136,6 @@ if "saved_reel" not in st.session_state:
 if "saved_seo" not in st.session_state:
     st.session_state["saved_seo"] = None
 
-# --- SIDEBAR SETTINGS ---
 with st.sidebar:
     st.header("🔑 API & Studio Settings")
     api_key = st.text_input("Gemini API Key Yahan Daalein", type="password", help="Google AI Studio se apni free key paste karein").strip()
@@ -197,7 +160,7 @@ with st.sidebar:
     st.subheader("✨ Crystal Clear 4K HDR Engine")
     hdr_boost = st.checkbox("🔥 4K HDR Clarity & Color Boost", value=True)
     denoise_clean = st.checkbox("🧼 Pixel Noise & Blur Remover (AI Clean)", value=True)
-    upscale_2k = st.checkbox("📺 2K 1440p Ultra Bitrate Output", value=True)
+    upscale_2k = st.checkbox("📺 2K 1440p Ultra Bitrate Output", value=False)
     sharpness = st.slider("🔪 Smart Sharpness (CAS)", min_value=0.0, max_value=1.0, value=0.65, step=0.05)
     
     st.divider()
@@ -209,7 +172,7 @@ with st.sidebar:
     st.divider()
     if st.button("🗑️ Clear Purani Files"):
         for f in os.listdir("."):
-            if f.startswith("clip_") or f.startswith("voice_reel_") or f.startswith("source_") or f.startswith("temp_bg_") or f.startswith("tts_") or f in ["temp_logo.png"]:
+            if f.startswith(("clip_", "voice_reel_", "source_", "temp_bg_", "tts_")) or f == "temp_logo.png":
                 try:
                     os.remove(f)
                 except:
@@ -219,7 +182,6 @@ with st.sidebar:
         st.session_state["saved_reel"] = None
         st.success("Purani files saaf ho gayi!")
 
-# --- HELPER FUNCTIONS ---
 def get_gemini_client(key):
     if not key:
         st.error("❌ Pehle left sidebar mein apni Gemini API Key daalein!")
@@ -231,7 +193,7 @@ def safe_gemini_generate(client, prompt_text):
     try:
         for m in client.models.list():
             name = getattr(m, "name", "").replace("models/", "")
-            if "gemini" in name and ("flash" in name or "pro" in name) and "image" not in name and "audio" not in name and "tts" not in name:
+            if "gemini" in name and ("flash" in name or "pro" in name) and not any(x in name for x in ["image", "audio", "tts"]):
                 if name not in candidates:
                     candidates.append(name)
     except Exception:
@@ -254,8 +216,7 @@ async def generate_tts_audio(text, voice_code, output_mp3, speech_rate="-8%"):
 
 def wrap_line_two_rows(line, max_chars=26):
     words = line.split()
-    rows = []
-    curr = ""
+    rows, curr = [], ""
     for w in words:
         if len(curr) + len(w) + 1 <= max_chars:
             curr = (curr + " " + w).strip()
@@ -268,13 +229,7 @@ def wrap_line_two_rows(line, max_chars=26):
     return rows[:2]
 
 def escape_drawtext(txt):
-    return (
-        txt.replace("\\", "\\\\")
-           .replace(":", "\\:")
-           .replace("'", "")
-           .replace('"', "")
-           .replace("%", "\\%")
-    )
+    return txt.replace("\\", "\\\\").replace(":", "\\:").replace("'", "").replace('"', "").replace("%", "\\%")
 
 def build_glowing_drawtext_chain(lines, total_audio_dur, glow_theme="Gold & Neon Yellow", pos_mode="Bottom Safe (Face Free)", add_flash=False):
     theme_map = {
@@ -286,14 +241,11 @@ def build_glowing_drawtext_chain(lines, total_audio_dur, glow_theme="Gold & Neon
     font_c, border_c, box_c = theme_map.get(glow_theme, ("#FFD700", "#FF8C00", "black@0.72"))
 
     if "Bottom-Left" in pos_mode:
-        x_expr = "60"
-        base_y = 1480
+        x_expr, base_y = "60", 1480
     elif "Bottom-Right" in pos_mode:
-        x_expr = "w-text_w-60"
-        base_y = 1480
+        x_expr, base_y = "w-text_w-60", 1480
     else:
-        x_expr = "(w-text_w)/2"
-        base_y = 1480
+        x_expr, base_y = "(w-text_w)/2", 1480
 
     clean_lines = [ln.strip() for ln in lines if ln.strip()]
     if not clean_lines:
@@ -310,75 +262,52 @@ def build_glowing_drawtext_chain(lines, total_audio_dur, glow_theme="Gold & Neon
 
         if add_flash:
             flash_t = round(st_t + 0.25, 2)
-            filters.append(
-                f"eq=brightness=0.22:contrast=1.18:saturation=1.22:enable='between(t,{st_t},{flash_t})'"
-            )
+            filters.append(f"eq=brightness=0.22:contrast=1.18:saturation=1.22:enable='between(t,{st_t},{flash_t})'")
 
         sub_rows = wrap_line_two_rows(ln, max_chars=28)
         for r_idx, row_txt in enumerate(sub_rows):
             safe_txt = escape_drawtext(row_txt)
             y_pos = base_y + (r_idx * 68)
-            dt = (
+            filters.append(
                 f"drawtext=text='{safe_txt}':fontcolor={font_c}:fontsize=48:"
-                f"borderw=3:bordercolor={border_c}:"
-                f"box=1:boxcolor={box_c}:boxborderw=14:"
-                f"x={x_expr}:y={y_pos}:"
-                f"enable='between(t,{st_t},{end_t})'"
+                f"borderw=3:bordercolor={border_c}:box=1:boxcolor={box_c}:boxborderw=14:"
+                f"x={x_expr}:y={y_pos}:enable='between(t,{st_t},{end_t})'"
             )
-            filters.append(dt)
         curr_t = end_t
 
     return ",".join(filters)
 
-# --- MAIN TABS ---
 tab1, tab2, tab3 = st.tabs([
     "🎬 Crystal Clear 4K AI Clipper",
     "🎙️ AI Hinglish Shayari & Glowing Reel (15-30s)",
     "🚀 AI Viral SEO, Script & Growth Agents"
 ])
 
-# ==========================================
-# TAB 1: CRYSTAL CLEAR 4K AI VIRAL CLIPPER
-# ==========================================
 with tab1:
     st.subheader("📥 Video Source Chunein:")
-    source_type = st.radio("Source Type", ["YouTube Video Link", "Upload Video File (MP4/MOV)"], horizontal=True, label_visibility="collapsed")
+    source_type = st.radio("Source Type", ["Upload Video File (MP4/MOV) ⭐", "YouTube Video Link"], horizontal=True, label_visibility="collapsed")
     
-    yt_url = ""
-    uploaded_video = None
-    
-    if source_type == "YouTube Video Link":
+    yt_url, uploaded_video = "", None
+    if "YouTube" in source_type:
         yt_url = st.text_input("YouTube Video URL paste karein", placeholder="https://www.youtube.com/watch?v=...")
+        st.caption("ℹ️ Note: Kabhi-kabhi YouTube cloud server se direct download block kar deta hai—agar block aaye toh 'Upload Video File' use karein.")
     else:
-        uploaded_video = st.file_uploader("Apni Video Upload Karein", type=["mp4", "mov", "mkv"])
+        uploaded_video = st.file_uploader("Apni Video Upload Karein (Gallery / Files)", type=["mp4", "mov", "mkv"])
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        num_clips = st.slider("Kitni Clips Nikalni Hain?", 1, 8, 4)
+        num_clips = st.slider("Kitni Clips Nikalni Hain?", 1, 6, 3)
     with col2:
         clip_duration = st.selectbox("Har Clip Ki Length", ["15-25 Seconds (Fast Viral)", "25-40 Seconds (Clutch/Story)", "45-60 Seconds (Full Moment)"])
     with col3:
-        niche_style = st.selectbox(
-            "Content Category",
-            [
-                "BGMI / TDM Clutch Gameplay",
-                "GTA 6 / Epic Moments",
-                "GTA 5 / Funny Gameplay",
-                "Podcast / Motivation",
-                "Tech / AI News"
-            ]
-        )
+        niche_style = st.selectbox("Content Category", ["BGMI / TDM Clutch Gameplay", "GTA 6 / Epic Moments", "GTA 5 / Funny Gameplay", "Podcast / Motivation", "Tech / AI News"])
 
     col_opt1, col_opt2 = st.columns([2, 1])
     with col_opt1:
-        credit_text = st.text_input("Channel Credit Text (Optional - Auto-detect bhi hoga)", placeholder="e.g., NAV OP LIVE")
+        credit_text = st.text_input("Channel Credit Text (Optional)", placeholder="e.g., NAV OP LIVE")
     with col_opt2:
         st.write("")
-        clutch_fx = st.checkbox(
-            "⚡ BGMI / TDM Clutch Slow-Mo + Lighting Flash",
-            value=True,
-            help="On rakhne par aakhiri kill/clutch par smooth Slow-Motion + Lighting Flash + Top Hook Banner lagega!"
-        )
+        clutch_fx = st.checkbox("⚡ BGMI / TDM Clutch Slow-Mo + Lighting Flash", value=True)
 
     if st.button("⚡ GENERATE CRYSTAL CLEAR 4K CLIPS NOW", type="primary"):
         client = get_gemini_client(api_key)
@@ -387,25 +316,29 @@ with tab1:
             channel_name = credit_text.strip()
             
             with st.status("🚀 Crystal Clear AI Engine Kaam Kar Raha Hai...", expanded=True) as status:
-                if source_type == "YouTube Video Link":
+                if "YouTube" in source_type:
                     if not yt_url:
                         st.error("YouTube link paste karein!")
                         st.stop()
-                    st.write("📥 Highest 1080p/2K Quality Video Download Ho Rahi Hai...")
+                    st.write("📥 YouTube Video Fetch Ho Rahi Hai...")
                     ydl_opts = {
-                        'format': 'bestvideo[height>=1080][height<=2160]+bestaudio/bestvideo+bestaudio/best',
-                        'merge_output_format': 'mp4',
+                        'format': 'best[ext=mp4]/best',
                         'ffmpeg_location': FFMPEG_EXE,
                         'outtmpl': video_path,
                         'overwrites': True,
-                        'quiet': True
+                        'quiet': True,
+                        'extractor_args': {'youtube': {'player_client': ['android', 'ios', 'web']}}
                     }
-                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                        info = ydl.extract_info(yt_url, download=True)
-                        if not channel_name:
-                            channel_name = info.get('uploader', 'NAV OP LIVE').upper()
-                        total_dur = info.get('duration', 300)
-                        video_title = info.get('title', 'Gaming Gameplay')
+                    try:
+                        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                            info = ydl.extract_info(yt_url, download=True)
+                            if not channel_name:
+                                channel_name = info.get('uploader', 'NAV OP LIVE').upper()
+                            total_dur = info.get('duration', 300)
+                            video_title = info.get('title', 'Gaming Gameplay')
+                    except Exception:
+                        st.error("⚠️ YouTube ne cloud server se is video ka direct download block kar diya hai. Kripya video ko phone mein save karke upar 'Upload Video File (MP4/MOV)' se upload karein!")
+                        st.stop()
                 else:
                     if not uploaded_video:
                         st.error("Video file upload karein!")
@@ -424,7 +357,7 @@ with tab1:
                 st.write("🧠 Gemini AI Best Viral Moments + Auto Title/Tags Dhoondh Raha Hai...")
                 prompt = f"""
                 Analyze this video context: Title='{video_title}', Creator='{channel_name}', Duration={total_dur} seconds, Category='{niche_style}'.
-                Select {num_clips} viral clip timestamp ranges (within 10s to {max(60, total_dur-15)}s) matching '{clip_duration}'.
+                Select {num_clips} viral clip timestamp ranges (within 5s to {max(30, total_dur-10)}s) matching '{clip_duration}'.
                 For EACH clip, generate viral Hinglish/English title, Instagram/YouTube description, and hashtags.
                 Return ONLY a valid JSON array with keys: "start_sec" (int), "end_sec" (int), "hook_title" (string), "caption" (string), "tags" (string).
                 """
@@ -437,8 +370,8 @@ with tab1:
                     st.warning(f"AI JSON fallback active: {e}")
                     clips_data = [
                         {
-                            "start_sec": 30 + (i * 45),
-                            "end_sec": 58 + (i * 45),
+                            "start_sec": 10 + (i * 25),
+                            "end_sec": 32 + (i * 25),
                             "hook_title": f"1v4 TDM CLUTCH MOMENT #{i+1} 🔥",
                             "caption": f"{channel_name} ka zabardast clutch! End tak zaroor dekho 😱🔥",
                             "tags": "#bgmi #tdm #clutch #gaming #viral #shorts #reels #navoplive"
@@ -447,16 +380,15 @@ with tab1:
 
                 st.write("🎬 Crystal Clear 4K HDR Clarity Ke Saath Clips Render Ho Rahi Hain...")
                 generated_files = []
-                
                 out_w = 1440 if upscale_2k else 1080
                 out_h = 2560 if upscale_2k else 1920
                 safe_credit = escape_drawtext(channel_name)
 
                 for idx, clip in enumerate(clips_data):
-                    start_t = clip.get("start_sec", 20)
-                    end_t = clip.get("end_sec", start_t + 25)
+                    start_t = clip.get("start_sec", 10)
+                    end_t = clip.get("end_sec", start_t + 20)
                     if end_t <= start_t:
-                        end_t = start_t + 25
+                        end_t = start_t + 20
                     
                     clip_len = max(6.0, float(end_t - start_t))
                     out_file = f"clip_{random.randint(100,999)}_{idx+1}.mp4"
@@ -468,7 +400,6 @@ with tab1:
                         clean_filters.append("eq=contrast=1.10:brightness=0.015:saturation=1.18")
                     if sharpness > 0:
                         clean_filters.append(f"cas={sharpness}")
-                    
                     clean_chain = ",".join(clean_filters) if clean_filters else "null"
 
                     if "Smart Fit 9:16" in layout_mode:
@@ -505,9 +436,7 @@ with tab1:
                         slow_start = round(max(2.0, clip_len - 3.5), 2)
                         flash_end = round(slow_start + 0.45, 2)
                         glow_end = round(slow_start + 2.2, 2)
-                        raw_hook = re.sub(r'[^\w\s\!\?\-\+\/\#]', '', clip.get('hook_title', '1v4 CLUTCH')).strip()[:30]
-                        if not raw_hook:
-                            raw_hook = "INSANE TDM CLUTCH"
+                        raw_hook = re.sub(r'[^\w\s\!\?\-\+\/\#]', '', clip.get('hook_title', '1v4 CLUTCH')).strip()[:30] or "INSANE TDM CLUTCH"
                         safe_hook = escape_drawtext(raw_hook.upper())
 
                         filter_complex = (
@@ -521,80 +450,25 @@ with tab1:
                             f"[0:a]atrim={slow_start},asetpts=PTS-STARTPTS,atempo=0.58[a2];"
                             f"[a1][a2]concat=n=2:v=0:a=1[aout]"
                         )
-                        cmd = [
-                            FFMPEG_EXE, "-y",
-                            "-ss", str(start_t),
-                            "-to", str(end_t),
-                            "-i", video_path,
-                            "-filter_complex", filter_complex,
-                            "-map", "[vout]",
-                            "-map", "[aout]",
-                            "-c:v", "libx264",
-                            "-preset", "slow",
-                            "-crf", "15",
-                            "-pix_fmt", "yuv420p",
-                            "-c:a", "aac",
-                            "-b:a", "256k",
-                            out_file
-                        ]
+                        cmd = [FFMPEG_EXE, "-y", "-ss", str(start_t), "-to", str(end_t), "-i", video_path, "-filter_complex", filter_complex, "-map", "[vout]", "-map", "[aout]", "-c:v", "libx264", "-preset", "fast", "-crf", "17", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", out_file]
                         subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                         if not os.path.exists(out_file) or os.path.getsize(out_file) < 10000:
-                            filter_no_audio = (
-                                f"{base_vf},"
-                                f"drawtext=text='{safe_hook}':fontcolor=#FFD700:fontsize=46:borderw=3:bordercolor=#FF6600:"
-                                f"box=1:boxcolor=black@0.78:boxborderw=16:x=(w-text_w)/2:y=160,"
-                                f"eq=brightness=0.38:contrast=1.28:saturation=1.40:enable='between(t,{slow_start},{flash_end})',"
-                                f"eq=brightness=0.10:contrast=1.18:saturation=1.28:enable='between(t,{flash_end},{glow_end})',"
-                                f"setpts='if(lt(T,{slow_start}),PTS,(({slow_start})+(T-{slow_start})/0.58)/TB)'[vout]"
-                            )
-                            cmd_na = [
-                                FFMPEG_EXE, "-y",
-                                "-ss", str(start_t),
-                                "-to", str(end_t),
-                                "-i", video_path,
-                                "-filter_complex", filter_no_audio,
-                                "-map", "[vout]",
-                                "-c:v", "libx264",
-                                "-preset", "slow",
-                                "-crf", "15",
-                                "-pix_fmt", "yuv420p",
-                                out_file
-                            ]
+                            filter_no_audio = filter_complex.split("[vout];")[0] + "[vout]"
+                            cmd_na = [FFMPEG_EXE, "-y", "-ss", str(start_t), "-to", str(end_t), "-i", video_path, "-filter_complex", filter_no_audio, "-map", "[vout]", "-c:v", "libx264", "-preset", "fast", "-crf", "17", "-pix_fmt", "yuv420p", out_file]
                             subprocess.run(cmd_na, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                     else:
                         filter_complex = f"{base_vf}[vout]"
-                        cmd = [
-                            FFMPEG_EXE, "-y",
-                            "-ss", str(start_t),
-                            "-to", str(end_t),
-                            "-i", video_path,
-                            "-filter_complex", filter_complex,
-                            "-map", "[vout]",
-                            "-map", "0:a?",
-                            "-c:v", "libx264",
-                            "-preset", "slow",
-                            "-crf", "15",
-                            "-pix_fmt", "yuv420p",
-                            "-c:a", "aac",
-                            "-b:a", "256k",
-                            out_file
-                        ]
+                        cmd = [FFMPEG_EXE, "-y", "-ss", str(start_t), "-to", str(end_t), "-i", video_path, "-filter_complex", filter_complex, "-map", "[vout]", "-map", "0:a?", "-c:v", "libx264", "-preset", "fast", "-crf", "17", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", out_file]
                         subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                     
                     if os.path.exists(out_file) and os.path.getsize(out_file) > 10000:
                         generated_files.append((out_file, clip))
 
                 st.session_state["saved_clips"] = generated_files
-                st.session_state["saved_clips_meta"] = {
-                    "channel_name": channel_name,
-                    "fx_badge": "⚡ Clutch Slow-Mo + Flash ON" if clutch_fx else "Standard 4K"
-                }
+                st.session_state["saved_clips_meta"] = {"channel_name": channel_name, "fx_badge": "⚡ Clutch Slow-Mo + Flash ON" if clutch_fx else "Standard 4K"}
                 status.update(label="✅ Crystal Clear 4K Clips Aur Auto Title/Tags Taiyaar Hain!", state="complete")
 
-    valid_saved_clips = [
-        (fp, mt) for fp, mt in st.session_state.get("saved_clips", [])
-        if os.path.exists(fp) and os.path.getsize(fp) > 10000
-    ]
+    valid_saved_clips = [(fp, mt) for fp, mt in st.session_state.get("saved_clips", []) if os.path.exists(fp) and os.path.getsize(fp) > 10000]
     if valid_saved_clips:
         st.divider()
         saved_meta = st.session_state.get("saved_clips_meta", {})
@@ -610,22 +484,11 @@ with tab1:
                 st.video(clip_bytes)
                 file_size_mb = round(os.path.getsize(file_path) / (1024 * 1024), 1)
                 st.caption(f"📦 Size: {file_size_mb} MB | {fx_label} | Credit: {ch_label}")
-                
                 with st.expander("📋 Auto Title, Caption & Tags Copy Karein", expanded=True):
                     st.text_input(f"Title (Clip {idx+1})", value=meta.get('hook_title', ''), key=f"t_{file_path}_{idx}")
                     st.text_area(f"Caption + Tags (Clip {idx+1})", value=f"{meta.get('caption', '')}\n\nCredit: {ch_label}\n\n{meta.get('tags', '')}", height=110, key=f"c_{file_path}_{idx}")
-                
-                st.download_button(
-                    label=f"⬇️ Download Crystal Clear Clip {idx+1}",
-                    data=clip_bytes,
-                    file_name=f"clear_{file_path}",
-                    mime="video/mp4",
-                    key=f"dl_{file_path}_{idx}"
-                )
+                st.download_button(label=f"⬇️ Download Crystal Clear Clip {idx+1}", data=clip_bytes, file_name=f"clear_{file_path}", mime="video/mp4", key=f"dl_{file_path}_{idx}")
 
-# ==========================================
-# TAB 2: AI HINGLISH SHAYARI & GLOWING LINE-BY-LINE REEL MAKER
-# ==========================================
 with tab2:
     st.subheader("🎙️ Photo ya Video Pe 15–30 Sec Ki Stylish Hinglish Glowing Shayari Reel")
     st.info("Har click par bilkul nayi Hinglish shayari aayegi — aur video mein face ke neeche/side mein ek-ek line colorful neon glow ke saath aayegi aur mit-ti jayegi!")
@@ -634,10 +497,7 @@ with tab2:
     with col_v1:
         bg_media = st.file_uploader("1️⃣ Photo (JPG/PNG) ya Video (MP4/MOV) Upload Karein", type=["jpg", "jpeg", "png", "mp4", "mov"])
         min_reel_sec = st.slider("⏱️ Kam Se Kam Reel Length (Seconds)", min_value=15, max_value=30, value=20, step=1)
-        glow_color = st.selectbox(
-            "✨ Text Lighting / Glow Color Chunein",
-            ["Gold & Neon Yellow", "Cyan & Electric Blue", "Neon Green & White", "Pink & Magenta Glow"]
-        )
+        glow_color = st.selectbox("✨ Text Lighting / Glow Color Chunein", ["Gold & Neon Yellow", "Cyan & Electric Blue", "Neon Green & White", "Pink & Magenta Glow"])
     with col_v2:
         voice_choice = st.selectbox(
             "2️⃣ AI Bot Awaaz Chunein (Male / Female)",
@@ -659,20 +519,9 @@ with tab2:
                 "Yaari / Dosti Emotional Lines 🤝"
             ]
         )
-        text_pos = st.selectbox(
-            "📍 Text Position (Face Save Mode)",
-            [
-                "Bottom Safe (Face Free - Neeche Center)",
-                "Bottom-Left Side (Side Corner)",
-                "Bottom-Right Side (Side Corner)"
-            ]
-        )
+        text_pos = st.selectbox("📍 Text Position (Face Save Mode)", ["Bottom Safe (Face Free - Neeche Center)", "Bottom-Left Side (Side Corner)", "Bottom-Right Side (Side Corner)"])
 
-    reel_flash_fx = st.checkbox(
-        "✨ Cinematic Lighting Flash + Slow-Zoom Effect (Har nayi line par halki chamak)",
-        value=True,
-        help="On rakhne par har nayi shayari line aate waqt halki lighting flash chamkegi aur photo par slow zoom chalega!"
-    )
+    reel_flash_fx = st.checkbox("✨ Cinematic Lighting Flash + Slow-Zoom Effect", value=True)
 
     if st.button("🔄 Nayi Hinglish Shayari Generate Karein (Har Baar Alag)"):
         client = get_gemini_client(api_key)
@@ -688,7 +537,6 @@ with tab2:
                     - Do NOT use Devanagari script. Use only English A-Z letters, commas, and full stops.
                     - Each line must be short (4 to 7 words) so it fits cleanly on screen one line at a time.
                     - Total 8 to 10 lines (around 50-60 words total) so it takes 20-25 seconds to speak slowly.
-                    - Make it 100% unique and different from previous outputs.
                     - Return ONLY the lines, one line per row, no numbering or extra text.
                     """
                     st.session_state["generated_shayari"] = safe_gemini_generate(client, sh_prompt)
@@ -706,11 +554,7 @@ with tab2:
         "Teri asli jeet ka toh abhi poora aasmaan baaki hai!"
     )
 
-    shayari_text = st.text_area(
-        "4️⃣ Yahan Hinglish Shayari Likhein Ya Edit Karein (Har Line Ek-Ek Karke Screen Par Aayegi):",
-        value=st.session_state.get("generated_shayari", default_hinglish_shayari),
-        height=180
-    )
+    shayari_text = st.text_area("4️⃣ Yahan Hinglish Shayari Likhein Ya Edit Karein:", value=st.session_state.get("generated_shayari", default_hinglish_shayari), height=180)
 
     if st.button("🎬 GENERATE STYLISH GLOWING HINGLISH REEL NOW", type="primary"):
         if not bg_media:
@@ -732,17 +576,13 @@ with tab2:
                 asyncio.run(generate_tts_audio(shayari_text.strip(), selected_voice, audio_out, speech_rate="-8%"))
 
                 try:
-                    audio_info = MP3(audio_out)
-                    audio_dur = float(audio_info.info.length)
+                    audio_dur = float(MP3(audio_out).info.length)
                 except Exception:
                     audio_dur = 20.0
 
                 final_dur = max(float(min_reel_sec), audio_dur + 1.2)
-
                 lines_list = shayari_text.strip().split("\n")
-                glow_drawtext = build_glowing_drawtext_chain(
-                    lines_list, audio_dur, glow_theme=glow_color, pos_mode=text_pos, add_flash=reel_flash_fx
-                )
+                glow_drawtext = build_glowing_drawtext_chain(lines_list, audio_dur, glow_theme=glow_color, pos_mode=text_pos, add_flash=reel_flash_fx)
 
                 ext = bg_media.name.split(".")[-1].lower()
                 is_image = ext in ["jpg", "jpeg", "png"]
@@ -770,49 +610,15 @@ with tab2:
                 )
 
                 if is_image:
-                    cmd_reel = [
-                        FFMPEG_EXE, "-y",
-                        "-loop", "1",
-                        "-i", media_path,
-                        "-i", audio_out,
-                        "-filter_complex", vf_common,
-                        "-map", "[vout]",
-                        "-map", "1:a",
-                        "-t", str(final_dur),
-                        "-c:v", "libx264",
-                        "-tune", "stillimage",
-                        "-crf", "16",
-                        "-pix_fmt", "yuv420p",
-                        "-c:a", "aac",
-                        "-b:a", "192k",
-                        reel_out
-                    ]
+                    cmd_reel = [FFMPEG_EXE, "-y", "-loop", "1", "-i", media_path, "-i", audio_out, "-filter_complex", vf_common, "-map", "[vout]", "-map", "1:a", "-t", str(final_dur), "-c:v", "libx264", "-tune", "stillimage", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", reel_out]
                 else:
-                    cmd_reel = [
-                        FFMPEG_EXE, "-y",
-                        "-stream_loop", "-1",
-                        "-i", media_path,
-                        "-i", audio_out,
-                        "-filter_complex", vf_common,
-                        "-map", "[vout]",
-                        "-map", "1:a",
-                        "-t", str(final_dur),
-                        "-c:v", "libx264",
-                        "-crf", "16",
-                        "-pix_fmt", "yuv420p",
-                        "-c:a", "aac",
-                        "-b:a", "192k",
-                        reel_out
-                    ]
+                    cmd_reel = [FFMPEG_EXE, "-y", "-stream_loop", "-1", "-i", media_path, "-i", audio_out, "-filter_complex", vf_common, "-map", "[vout]", "-map", "1:a", "-t", str(final_dur), "-c:v", "libx264", "-crf", "16", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", reel_out]
 
                 res_proc = subprocess.run(cmd_reel, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 v_status.update(label=f"✅ {round(final_dur, 1)} Second Ki Stylish Glowing Hinglish Reel Taiyaar Hai!", state="complete")
 
             if os.path.exists(reel_out) and os.path.getsize(reel_out) > 10000:
-                st.session_state["saved_reel"] = {
-                    "file": reel_out,
-                    "dur": round(final_dur, 1)
-                }
+                st.session_state["saved_reel"] = {"file": reel_out, "dur": round(final_dur, 1)}
             else:
                 st.error(f"⚠️ Video render nahi ho payi. FFmpeg detail: {res_proc.stderr[-300:]}")
 
@@ -821,21 +627,10 @@ with tab2:
         with open(saved_reel["file"], "rb") as vf:
             reel_bytes = vf.read()
         st.video(reel_bytes)
-        st.download_button(
-            label=f"⬇️ Download {saved_reel['dur']}s Glowing Hinglish Reel (9:16 HD)",
-            data=reel_bytes,
-            file_name=saved_reel["file"],
-            mime="video/mp4",
-            key=f"dl_reel_{saved_reel['file']}"
-        )
+        st.download_button(label=f"⬇️ Download {saved_reel['dur']}s Glowing Hinglish Reel (9:16 HD)", data=reel_bytes, file_name=saved_reel["file"], mime="video/mp4", key=f"dl_reel_{saved_reel['file']}")
 
-# ==========================================
-# TAB 3: AI VIRAL SEO, SCRIPT & GROWTH AGENTS
-# ==========================================
 with tab3:
     st.subheader("🚀 All-in-One YouTube & Instagram Growth Agents (1-Click Auto SEO)")
-    st.info("Apni kisi bhi video ka topic daalein — AI aapke liye Viral Hooks, Script, YouTube Title/Description/Tags, Instagram Caption, Thumbnail Idea aur Comment Replies sab ek saath bana dega!")
-
     col_a, col_b = st.columns([2, 1])
     with col_a:
         video_topic = st.text_input("Video Topic ya Gameplay Details Likhein", placeholder="e.g., NAV OP LIVE 1v4 Room Match Clutch in BGMI ya GTA 6 Epic Police Chase")
@@ -880,25 +675,19 @@ with tab3:
     if st.session_state.get("saved_seo"):
         data = st.session_state["saved_seo"]
         st.success("✅ Poora Viral Package Taiyaar Hai! Neeche se seedha copy karein:")
-
         c1, c2 = st.columns(2)
         with c1:
             st.markdown("#### 📌 1. YouTube Title")
             st.code(data.get("yt_title", ""), language="text")
-
             st.markdown("#### 📝 2. YouTube Description")
             st.code(data.get("yt_description", ""), language="text")
-
             st.markdown("#### 🏷️ 3. YouTube Content Tags")
             st.code(data.get("yt_tags", ""), language="text")
-
         with c2:
             st.markdown("#### 📱 4. Instagram Viral Caption + Hashtags")
             st.code(data.get("insta_caption", ""), language="text")
-
             st.markdown("#### 🎯 5. Top 3 Scroll-Stopping Hooks & Script")
             hooks_str = "\n".join([f"• {h}" for h in data.get("viral_hooks", [])])
             st.code(f"HOOKS:\n{hooks_str}\n\nSCRIPT:\n{data.get('short_script', '')}", language="text")
-
             st.markdown("#### 🖼️ 6. Thumbnail Idea & Pinned Comment")
             st.code(f"THUMBNAIL:\n{data.get('thumbnail_idea', '')}\n\nPINNED COMMENT:\n{data.get('pinned_comment', '')}", language="text")
