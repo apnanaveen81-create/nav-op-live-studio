@@ -42,18 +42,17 @@ DEFAULT_YT_COOKIES = """# Netscape HTTP Cookie File
 """
 
 def save_valid_cookies(raw_text, path="yt_cookies.txt"):
-    fixed_raw = raw_text.replace("\\t", "\t")
-    lines = fixed_raw.strip().splitlines()
+    fixed = raw_text.replace("\\t", "\t").replace("\r", "")
     cleaned = ["# Netscape HTTP Cookie File"]
-    for line in lines:
+    for line in fixed.strip().splitlines():
         line = line.strip()
         if not line or (line.startswith("#") and not line.startswith("#HttpOnly_")):
             continue
-        if "\t" not in line:
-            parts = re.split(r"\s+", line, maxsplit=6)
-            if len(parts) == 7:
-                line = "\t".join(parts)
-        cleaned.append(line)
+        parts = line.split("\t") if "\t" in line else re.split(r"\s+", line, maxsplit=6)
+        if len(parts) == 7:
+            clean_domain = parts[0].replace("#HttpOnly_", "")
+            parts[1] = "TRUE" if clean_domain.startswith(".") else "FALSE"
+            cleaned.append("\t".join(parts))
     with open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(cleaned) + "\n")
 
