@@ -392,7 +392,9 @@ with tab1:
                         'overwrites': True,
                         'quiet': True,
                         'cookiefile': "yt_cookies.txt",
-                       'extractor_args': {'youtube': {'player_client': ['android', 'ios', 'web']}}
+                       'extractor_args': {'youtube': {'player_client': ['tv_embedded', 'web']}},
+                        'format': 'bestvideo+bestaudio/best',
+                        'merge_output_format': 'mp4'
                     }
 
                     try:
