@@ -386,15 +386,12 @@ with tab1:
                         save_valid_cookies(DEFAULT_YT_COOKIES, "yt_cookies.txt")
                     st.write("📥 YouTube Video Valid Cookies Ke Saath Fetch Ho Rahi Hai...")
                     ydl_opts = {
-                        'format': 'best[ext=mp4]/best',
                         'ffmpeg_location': FFMPEG_EXE,
                         'outtmpl': video_path,
                         'overwrites': True,
                         'quiet': True,
                         'cookiefile': "yt_cookies.txt",
-                       'extractor_args': {'youtube': {'player_client': ['tv_embedded', 'web']}},
-                        'format': 'bestvideo+bestaudio/best',
-                        'merge_output_format': 'mp4'
+                        'extractor_args': {'youtube': {'player_client': ['web', 'mweb']}}
                     }
 
                     try:
